@@ -5,7 +5,6 @@ const input = document.getElementById("input")
 // play sin wave with web audio api
 class SinWaveGen {
   constructor() {
-
     this.playing = false
   }
 
@@ -13,8 +12,8 @@ class SinWaveGen {
     this.context = new AudioContext()
     this.oscillator = this.context.createOscillator()
     this.oscillator.type = "sine"
-    this.oscillator.connect(this.context.destination)      
-}
+    this.oscillator.connect(this.context.destination)
+  }
 
   noteOn(freq) {
     if (!this.playing) {
@@ -57,6 +56,65 @@ class MorseInterpreter {
   }
 
 }
+function morseToJapanese(morse) {
+  const morseToJapanese = {
+    "--.--": "ア",
+    ".-": "イ",
+    "..-": "ウ",
+    "-.---": "エ",
+    ".-...": "オ",
+    ".-..": "カ",
+    "-.-..": "キ",
+    "...-": "ク",
+    "-.--": "ケ",
+    "----": "コ",
+    "-.-.-": "サ",
+    "--.-.": "シ",
+    "---.-": "ス",
+    ".---.": "セ",
+    "---.": "ソ",
+    "-.": "タ",
+    "..-.": "チ",
+    ".--.": "ツ",
+    ".-.--": "テ",
+    "..-..": "ト",
+    ".-.": "ナ",
+    "-.-.": "ニ",
+    "....": "ヌ",
+    "--.-": "ネ",
+    "..--": "ノ",
+    "-...": "ハ",
+    "--..-": "ヒ",
+    "--..": "フ",
+    ".": "ヘ",
+    "-..": "ホ",
+    "-..-": "マ",
+    "..-.-": "ミ",
+    "-": "ム",
+    "-...-": "メ",
+    "-..-.": "モ",
+    ".--": "ヤ",
+    "-..--": "ユ",
+    "--": "ヨ",
+    "...": "ラ",
+    "--.": "リ",
+    "-.--.": "ル",
+    "---": "レ",
+    ".-.-": "ロ",
+    "-.-": "ワ",
+    ".-..-": "ヰ",
+    ".---": "ヲ",
+    ".--..": "ヱ",
+    ".-.-.": "ン",
+    "..": "゛",
+    "..--.": "゜",
+    ".--.-": "ー",
+    ".-.-.-": "、",
+    "-..---": "【本文】",
+    "...-.": "【終】",
+  }
+  return morseToJapanese[morse]
+}
 
 function morseToLetter(morse) {
   const morseToLetter = {
@@ -97,7 +155,6 @@ function morseToLetter(morse) {
     "----.": "9",
     "-----": "0",
   }
-
   return morseToLetter[morse]
 }
 
@@ -124,7 +181,8 @@ pushButton.addEventListener("pointerup", () => {
 
 
   letterGapTimer = setTimeout(() => {
-    const letter = morseToLetter(interpreter.interpret())
+    // const letter = morseToLetter(interpreter.interpret())
+    const letter = morseToJapanese(interpreter.interpret())
     if (letter) {
       console.log(letter)
       input.value += letter
