@@ -1,95 +1,91 @@
-const pushButton = document.getElementById("push")
-const input = document.getElementById("input")
+const pushButton = document.getElementById("push");
+const input = document.getElementById("input");
 //  Morse code app
 
 // play sin wave with web audio api
 class SinWaveGen {
   constructor() {
-    this.playing = false
+    this.playing = false;
   }
 
   init(isSawTooth) {
-    this.context = new AudioContext()
-    if(isSawTooth){
+    this.context = new AudioContext();
+    if (isSawTooth) {
       //create 5 sawtooth oscillators
-      this.oscillators = []
+      this.oscillators = [];
       for (let i = 0; i < 5; i++) {
-        this.oscillators.push(this.context.createOscillator())
-        this.oscillators[i].type = "sawtooth"
-        this.oscillators[i].detune.value = 50 * i - 50 * 2.5
+        this.oscillators.push(this.context.createOscillator());
+        this.oscillators[i].type = "sawtooth";
+        this.oscillators[i].detune.value = 50 * i - 50 * 2.5;
       }
-
-    }else{
-      this.oscillators = []
-      const oscillator = this.context.createOscillator()
-      oscillator.type = "sine"
-      this.oscillators.push(oscillator)
+    } else {
+      this.oscillators = [];
+      const oscillator = this.context.createOscillator();
+      oscillator.type = "sine";
+      this.oscillators.push(oscillator);
     }
-    this.gainNode = this.context.createGain()
-    this.gainNode.gain.value = 0.2
+    this.gainNode = this.context.createGain();
+    this.gainNode.gain.value = 0.2;
     // this.oscillator.connect(this.gainNode)
     for (let i = 0; i < this.oscillators.length; i++) {
-      this.oscillators[i].connect(this.gainNode)
+      this.oscillators[i].connect(this.gainNode);
     }
-    this.gainNode.connect(this.context.destination)
+    this.gainNode.connect(this.context.destination);
   }
 
-  
   noteOn(freq) {
     if (!this.playing) {
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)')
-      if(isDark.matches){
-        this.init(true)
-      }else{
-        this.init(false)
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)");
+      if (isDark.matches) {
+        this.init(true);
+      } else {
+        this.init(false);
       }
 
       // this.oscillator.start()
       for (let i = 0; i < this.oscillators.length; i++) {
-        this.oscillators[i].start()
+        this.oscillators[i].start();
       }
-      this.playing = true
+      this.playing = true;
     }
     // this.oscillator.frequency.value = freq
     for (let i = 0; i < this.oscillators.length; i++) {
-      this.oscillators[i].frequency.value = freq
+      this.oscillators[i].frequency.value = freq;
     }
   }
 
   noteOff() {
     // this.oscillator.frequency.value = 0
     for (let i = 0; i < this.oscillators.length; i++) {
-      this.oscillators[i].frequency.value = 0
+      this.oscillators[i].frequency.value = 0;
     }
   }
 }
 
-const gen = new SinWaveGen()
+const gen = new SinWaveGen();
 
-let lastTime = 0
-const downEventItems = []
-const currentDownEvents = []
-const morseShortLength = 120
-const morseLetterGapLength = morseShortLength * 3
-const morseWordGapLength = morseShortLength * 7
-
+let lastTime = 0;
+const downEventItems = [];
+const currentDownEvents = [];
+const morseShortLength = 120;
+const morseLetterGapLength = morseShortLength * 3;
+const morseWordGapLength = morseShortLength * 7;
 
 class MorseInterpreter {
   constructor(downEvent) {
-    this.downEvent = downEvent
+    this.downEvent = downEvent;
   }
 
   interpret() {
     const morse = this.downEvent.map((event) => {
       if (event < morseShortLength) {
-        return "."
+        return ".";
       } else {
-        return "-"
+        return "-";
       }
-    })
-    return morse.join("")
+    });
+    return morse.join("");
   }
-
 }
 const morseToJapaneseList = {
   "--.--": "ア",
@@ -146,10 +142,9 @@ const morseToJapaneseList = {
   ".-.-.-": "、",
   "-..---": "【本文】",
   "...-.": "【終】",
-}
+};
 function morseToJapanese(morse) {
-
-  return morseToJapaneseList[morse]
+  return morseToJapaneseList[morse];
 }
 
 function morseToLetter(morse) {
@@ -190,75 +185,71 @@ function morseToLetter(morse) {
     "---..": "8",
     "----.": "9",
     "-----": "0",
-  }
-  return morseToLetter[morse]
+  };
+  return morseToLetter[morse];
 }
 
-const interpreter = new MorseInterpreter(downEventItems)
+const interpreter = new MorseInterpreter(downEventItems);
 
-
-function onDown(){
-  gen.noteOn(440)
+function onDown() {
+  gen.noteOn(440);
 
   if (letterGapTimer) {
-    clearTimeout(letterGapTimer)
+    clearTimeout(letterGapTimer);
   }
-  lastTime = Date.now()
+  lastTime = Date.now();
 }
 
-function onRelease(){
-  gen.noteOff()
-  const now = Date.now()
-  const diff = now - lastTime
-  downEventItems.push(diff)
-
+function onRelease() {
+  gen.noteOff();
+  const now = Date.now();
+  const diff = now - lastTime;
+  downEventItems.push(diff);
 
   letterGapTimer = setTimeout(() => {
-    const letter = morseToJapanese(interpreter.interpret())
+    const letter = morseToJapanese(interpreter.interpret());
     if (letter) {
-      console.log(letter)
-      input.innerText += letter
+      console.log(letter);
+      input.innerText += letter;
 
-      if("【終】" === letter) {
-        alert("回答ありがとうございました！")
-        input.innerText = ""
+      if ("【終】" === letter) {
+        alert("回答ありがとうございました！");
+        input.innerText = "";
       }
     }
-    downEventItems.length = 0
-  }, morseLetterGapLength)
+    downEventItems.length = 0;
+  }, morseLetterGapLength);
 }
 
 pushButton.addEventListener("keydown", (e) => {
   if (e.key === " ") {
-    e.preventDefault()
-    onDown()
+    e.preventDefault();
+    onDown();
   }
-})
+});
 
 pushButton.addEventListener("keyup", (e) => {
   if (e.key === " ") {
-    e.preventDefault()
-    onRelease()
+    e.preventDefault();
+    onRelease();
   }
-})
-
+});
 
 pushButton.addEventListener("pointerdown", (e) => {
-  e.target.setPointerCapture(e.pointerId)
-  onDown()
-})
+  e.target.setPointerCapture(e.pointerId);
+  onDown();
+});
 
-let letterGapTimer = null
+let letterGapTimer = null;
 
 pushButton.addEventListener("pointerup", () => {
-  onRelease()
-})
+  onRelease();
+});
 
 // add morse code list in div
-const morseList = document.getElementById("morse")
+const morseList = document.getElementById("morse");
 for (const key in morseToJapaneseList) {
-  const li = document.createElement("li")
-  li.innerText = `${key} : ${morseToJapaneseList[key]}`
-  morseList.appendChild(li)
+  const li = document.createElement("li");
+  li.innerText = `${key} : ${morseToJapaneseList[key]}`;
+  morseList.appendChild(li);
 }
-
