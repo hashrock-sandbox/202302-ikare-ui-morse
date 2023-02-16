@@ -223,6 +223,11 @@ pushButton.addEventListener("pointerup", () => {
     if (letter) {
       console.log(letter)
       input.innerText += letter
+
+      if("【終】" === letter) {
+        alert("回答ありがとうございました！")
+        input.innerText = ""
+      }
     }
     downEventItems.length = 0
   }, morseLetterGapLength)
