@@ -1,14 +1,14 @@
-body  {
+body {
   background: #f0f0f0;
-  font-family: "Helvetica Neue",
-  Arial,
-  "Hiragino Kaku Gothic ProN",
-  "Hiragino Sans",
-  Meiryo,
-  sans-serif;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
+}
+#bgm {
+  display: none;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: 400;
 }
 
@@ -31,8 +31,76 @@ body {
   border-radius: 4px;
 }
 
-button{
+button {
   font-family: inherit;
   font-size: 2rem;
   padding: 0.5rem 2rem;
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);}
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #000;
+    font-family: Oswald;
+    font-weight: 900;
+    animation: Color 4s linear infinite;
+  }
+  #bgm {
+    display: block;
+  }
+
+  #input {
+    border: 1px solid white;
+    color: white;
+    background-color: #000;
+    animation: rainbow 4s linear infinite;
+  }
+
+  /* border color animation */
+  @keyframes rainbow {
+    0% {
+      border-color: #a0d468;
+    }
+    20% {
+      border-color: #4fc1e9;
+    }
+    40% {
+      border-color: #ffce54;
+    }
+    60% {
+      border-color: #fc6e51;
+    }
+    80% {
+      border-color: #ed5565;
+    }
+    100% {
+      border-color: #ac92ec;
+    }
+  }
+
+  @keyframes Color {
+    0% {
+      color: #a0d468;
+    }
+
+    20% {
+      color: #4fc1e9;
+    }
+
+    40% {
+      color: #ffce54;
+    }
+
+    60% {
+      color: #fc6e51;
+    }
+
+    80% {
+      color: #ed5565;
+    }
+
+    100% {
+      color: #ac92ec;
+    }
+  }
+}

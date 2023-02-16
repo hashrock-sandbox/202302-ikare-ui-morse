@@ -21,9 +21,9 @@ class SinWaveGen {
 
     }else{
       this.oscillators = []
-      this.oscillators.push(this.context.createOscillator())
-      this.oscillator.type = "sine"
-  
+      const oscillator = this.context.createOscillator()
+      oscillator.type = "sine"
+      this.oscillators.push(oscillator)
     }
     this.gainNode = this.context.createGain()
     this.gainNode.gain.value = 0.2
@@ -37,7 +37,13 @@ class SinWaveGen {
   
   noteOn(freq) {
     if (!this.playing) {
-      this.init(true)
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)')
+      if(isDark.matches){
+        this.init(true)
+      }else{
+        this.init(false)
+      }
+
       // this.oscillator.start()
       for (let i = 0; i < this.oscillators.length; i++) {
         this.oscillators[i].start()
@@ -188,6 +194,7 @@ function morseToLetter(morse) {
 }
 
 const interpreter = new MorseInterpreter(downEventItems)
+
 
 
 pushButton.addEventListener("pointerdown", (e) => {
