@@ -197,20 +197,16 @@ function morseToLetter(morse) {
 const interpreter = new MorseInterpreter(downEventItems)
 
 
-
-pushButton.addEventListener("pointerdown", (e) => {
-  e.target.setPointerCapture(e.pointerId)
+function onDown(){
   gen.noteOn(440)
 
   if (letterGapTimer) {
     clearTimeout(letterGapTimer)
   }
   lastTime = Date.now()
-})
+}
 
-let letterGapTimer = null
-
-pushButton.addEventListener("pointerup", () => {
+function onRelease(){
   gen.noteOff()
   const now = Date.now()
   const diff = now - lastTime
@@ -218,7 +214,6 @@ pushButton.addEventListener("pointerup", () => {
 
 
   letterGapTimer = setTimeout(() => {
-    // const letter = morseToLetter(interpreter.interpret())
     const letter = morseToJapanese(interpreter.interpret())
     if (letter) {
       console.log(letter)
@@ -231,12 +226,32 @@ pushButton.addEventListener("pointerup", () => {
     }
     downEventItems.length = 0
   }, morseLetterGapLength)
+}
+
+pushButton.addEventListener("keydown", (e) => {
+  if (e.key === " ") {
+    e.preventDefault()
+    onDown()
+  }
+})
+
+pushButton.addEventListener("keyup", (e) => {
+  if (e.key === " ") {
+    e.preventDefault()
+    onRelease()
+  }
+})
 
 
-  // const letter = morseToLetter(interpreter.interpret())
-  // if(letter) {
-  //   downEventItems.length = 0
-  // }
+pushButton.addEventListener("pointerdown", (e) => {
+  e.target.setPointerCapture(e.pointerId)
+  onDown()
+})
+
+let letterGapTimer = null
+
+pushButton.addEventListener("pointerup", () => {
+  onRelease()
 })
 
 // add morse code list in div
