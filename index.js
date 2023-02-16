@@ -8,28 +8,53 @@ class SinWaveGen {
     this.playing = false
   }
 
-  init() {
+  init(isSawTooth) {
     this.context = new AudioContext()
-    this.oscillator = this.context.createOscillator()
-    this.oscillator.type = "sine"
+    if(isSawTooth){
+      //create 5 sawtooth oscillators
+      this.oscillators = []
+      for (let i = 0; i < 5; i++) {
+        this.oscillators.push(this.context.createOscillator())
+        this.oscillators[i].type = "sawtooth"
+        this.oscillators[i].detune.value = 50 * i - 50 * 2.5
+      }
 
+    }else{
+      this.oscillators = []
+      this.oscillators.push(this.context.createOscillator())
+      this.oscillator.type = "sine"
+  
+    }
     this.gainNode = this.context.createGain()
     this.gainNode.gain.value = 0.2
-    this.oscillator.connect(this.gainNode)
+    // this.oscillator.connect(this.gainNode)
+    for (let i = 0; i < this.oscillators.length; i++) {
+      this.oscillators[i].connect(this.gainNode)
+    }
     this.gainNode.connect(this.context.destination)
   }
 
+  
   noteOn(freq) {
     if (!this.playing) {
-      this.init()
-      this.oscillator.start()
+      this.init(true)
+      // this.oscillator.start()
+      for (let i = 0; i < this.oscillators.length; i++) {
+        this.oscillators[i].start()
+      }
       this.playing = true
     }
-    this.oscillator.frequency.value = freq
+    // this.oscillator.frequency.value = freq
+    for (let i = 0; i < this.oscillators.length; i++) {
+      this.oscillators[i].frequency.value = freq
+    }
   }
 
   noteOff() {
-    this.oscillator.frequency.value = 0
+    // this.oscillator.frequency.value = 0
+    for (let i = 0; i < this.oscillators.length; i++) {
+      this.oscillators[i].frequency.value = 0
+    }
   }
 }
 
