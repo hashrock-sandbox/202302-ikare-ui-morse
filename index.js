@@ -12,7 +12,11 @@ class SinWaveGen {
     this.context = new AudioContext()
     this.oscillator = this.context.createOscillator()
     this.oscillator.type = "sine"
-    this.oscillator.connect(this.context.destination)
+
+    this.gainNode = this.context.createGain()
+    this.gainNode.gain.value = 0.2
+    this.oscillator.connect(this.gainNode)
+    this.gainNode.connect(this.context.destination)
   }
 
   noteOn(freq) {
@@ -185,7 +189,7 @@ pushButton.addEventListener("pointerup", () => {
     const letter = morseToJapanese(interpreter.interpret())
     if (letter) {
       console.log(letter)
-      input.value += letter
+      input.innerText += letter
     }
     downEventItems.length = 0
   }, morseLetterGapLength)
